@@ -60,13 +60,12 @@ def process_question():
             data = request.get_json()
             user_id = data.get('user_id')
             message_input = data.get('message_input')
-            input_type = data.get('input_type')
         else:
             raise ValueError('Invalid content type')
         
         # Check if username, message_input and input_type are provided
-        if not user_id or not message_input or not input_type:
-            raise ValueError('user_id, message_input and input_type are required')
+        if not user_id or not message_input:
+            raise ValueError('user_id and message_input are required')
         logger.info(f'Received message from user {user_id}')
 
         # Initialize chatbot
@@ -77,12 +76,6 @@ def process_question():
             chatbot.create_user(user_id)
             user = chatbot.get_user(user_id)
         result = None  # Initialize result to a default value
-
-        # Handle the input based on its type
-        if input_type == 'text':
-            result = chatbot.ask_user_question(user_id, message_input)
-        else:
-            raise ValueError('Invalid input_type')
 
         end_time = time.time()
         processing_time = (end_time - start_time) * 1000  # convert to milliseconds
@@ -98,4 +91,4 @@ def process_question():
         return jsonify({'error': 'Server error'}), 500
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='127.0.0.1', port=5000)
