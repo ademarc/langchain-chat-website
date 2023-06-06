@@ -5,7 +5,9 @@ argilla==1.8.0
 async-timeout==4.0.2
 attrs==23.1.0
 backoff==2.2.1
+beautifulsoup4==4.12.2
 blinker==1.6.2
+bs4==0.0.1
 certifi==2023.5.7
 cffi==1.15.1
 chardet==5.1.0
@@ -15,6 +17,7 @@ commonmark==0.9.1
 cryptography==41.0.1
 dataclasses-json==0.5.7
 Deprecated==1.2.14
+dnspython==2.3.0
 et-xmlfile==1.1.0
 faiss-cpu==1.7.4
 Flask==2.3.2
@@ -52,6 +55,7 @@ Pillow==9.5.0
 pycparser==2.21
 pydantic==1.10.8
 Pygments==2.15.1
+pymongo==4.3.3
 pypandoc==1.11
 python-dateutil==2.8.2
 python-docx==0.8.11
@@ -66,6 +70,7 @@ rfc3986==1.5.0
 rich==13.0.1
 six==1.16.0
 sniffio==1.3.0
+soupsieve==2.4.1
 SQLAlchemy==2.0.15
 tabulate==0.9.0
 tenacity==8.2.2
@@ -81,4 +86,3 @@ wrapt==1.14.1
 xlrd==2.0.1
 XlsxWriter==3.1.2
 yarl==1.9.2
-pymongo

@@ -2,13 +2,11 @@ from flask import Flask, request, jsonify
 from werkzeug.middleware.proxy_fix import ProxyFix
 import time
 from config import setup_logging, get_db_creds
-from werkzeug.datastructures import FileStorage
-import os
 from url import load_url
 from sitemap import load_sitemap
 from embed_process import embed_docs
 from pymongo import MongoClient
-from werkzeug.exceptions import BadRequest
+from Chatbot import Chatbot
 
 # Set up logging
 logger = setup_logging()
@@ -55,10 +53,49 @@ def process_sitemap():
 
 @app.route('/askQuestion', methods=['POST'])
 def process_question():
-    question = request.json['question']
-    # Handle the question here
-    # Return a success message if the question is handled successfully
-    return jsonify({'message': 'Question handled successfully'}), 200
+    start_time = time.time()
+    try:
+
+        if request.content_type == 'application/json':
+            data = request.get_json()
+            user_id = data.get('user_id')
+            message_input = data.get('message_input')
+            input_type = data.get('input_type')
+        else:
+            raise ValueError('Invalid content type')
+        
+        # Check if username, message_input and input_type are provided
+        if not user_id or not message_input or not input_type:
+            raise ValueError('user_id, message_input and input_type are required')
+        logger.info(f'Received message from user {user_id}')
+
+        # Initialize chatbot
+        chatbot = Chatbot()
+        # Check if user exists in DB, if not create user
+        user = chatbot.get_user(user_id)
+        if not user:
+            chatbot.create_user(user_id)
+            user = chatbot.get_user(user_id)
+        result = None  # Initialize result to a default value
+
+        # Handle the input based on its type
+        if input_type == 'text':
+            result = chatbot.ask_user_question(user_id, message_input)
+        else:
+            raise ValueError('Invalid input_type')
+
+        end_time = time.time()
+        processing_time = (end_time - start_time) * 1000  # convert to milliseconds
+        logger.info(f'Successfully processed message from user {user_id} in {processing_time:.0f} milliseconds')
+
+        return jsonify(result), 200
+
+    except ValueError as e:
+        logger.error(f'Bad request: {e}')
+        return jsonify({'error': 'Bad request'}), 400
+    except Exception as e:
+        logger.error(f'Server error: {e}')
+        return jsonify({'error': 'Server error'}), 500
 
 if __name__ == '__main__':
     app.run(debug=True)

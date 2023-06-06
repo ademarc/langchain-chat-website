@@ -10,6 +10,10 @@ OPENAI_API_KEY = get_openai_key()
 # Set up logging
 logger = setup_logging()
 
+# Set index for embeddings
+index_store = 'data/indexes/global_index'
+embeddings = OpenAIEmbeddings()
+
 def embed_index(docs, embed_fn, index_store):
     try:
         faiss_db = FAISS.from_documents(docs, embed_fn)
@@ -28,13 +32,14 @@ def embed_index(docs, embed_fn, index_store):
 
 def embed_docs(documents):
     try:
-        text_splitter = CharacterTextSplitter(separator='\n', chunk_size=1000, chunk_overlap=0)
+        text_splitter = CharacterTextSplitter(separator='\n', chunk_size=1000, chunk_overlap=100)
         docs = text_splitter.split_documents(documents)
-        # select which embeddings we want to use
-        embeddings = OpenAIEmbeddings()
-        # create the vectorestore to use as the index
-        index_store = 'data/indexes/global_index'
         embed_index(docs, embeddings, index_store)
         logger.info(f"Successfully processed documents.")
     except Exception as e:
         logger.error(f"Failed to process documents. Error: {str(e)}")
+
+def load_documents():
+    db = FAISS.load_local(index_store, embeddings)
+    retriever = db.as_retriever(search_type="similarity", search_kwargs={"k":2})
+    return retriever
