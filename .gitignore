@@ -1,0 +1,28 @@
+# .gitignore
+__pycache__
+*.py[cod]
+*.pyd
+*.pyo
+*.pyz
+
+# virtual environment
+venv/
+
+# flask
+instance/
+
+# pyenv
+.python-version
+
+# secret
+.env
+
+# logs
+logs/
+
+# data
+data/
+
+start.sh
+
+.DS_Store
