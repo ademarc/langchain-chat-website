@@ -32,7 +32,7 @@ def embed_index(docs, embed_fn, index_store):
 
 def embed_docs(documents):
     try:
-        text_splitter = CharacterTextSplitter(separator='\n', chunk_size=1000, chunk_overlap=100)
+        text_splitter = CharacterTextSplitter(chunk_size=800, chunk_overlap=50)
         docs = text_splitter.split_documents(documents)
         embed_index(docs, embeddings, index_store)
         logger.info(f"Successfully processed documents.")
