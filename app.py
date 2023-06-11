@@ -79,6 +79,7 @@ def process_question():
 
         end_time = time.time()
         processing_time = (end_time - start_time) * 1000  # convert to milliseconds
+        result = chatbot.ask_user_question(user_id, message_input)
         logger.info(f'Successfully processed message from user {user_id} in {processing_time:.0f} milliseconds')
 
         return jsonify(result), 200
